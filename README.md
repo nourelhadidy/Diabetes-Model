@@ -1,107 +1,300 @@
-# Diabetes Risk Prediction — FastAPI
+# 🩺 Diabetes Risk Prediction API
 
-A FastAPI conversion of the original two Streamlit apps. Same models,
-same feature engineering, now served as a proper backend with a JSON API,
-auto-generated docs, and a small HTML/JS frontend.
+> A production-ready machine learning web application for diabetes risk prediction built with **FastAPI**, **XGBoost**, and a modern HTML/CSS/JavaScript frontend.
 
-## Project structure
+The project transforms an original Streamlit prototype into a scalable REST API by separating machine learning inference from the presentation layer. It provides interactive API documentation, automatic request validation, health monitoring, and a lightweight web interface for real-time predictions.
+
+---
+
+## 📖 Overview
+
+This application predicts a patient's risk of diabetes using trained machine learning models.
+
+Key improvements over the original Streamlit implementation include:
+
+- RESTful API using FastAPI
+- Modular backend architecture
+- Automatic request validation with Pydantic
+- Interactive Swagger and ReDoc documentation
+- Models loaded once at startup for improved performance
+- Separation of business logic from HTTP endpoints
+- Responsive web interface
+- Easily deployable to cloud platforms
+
+---
+
+## ✨ Features
+
+- 🧠 Machine Learning diabetes prediction
+- ⚡ High-performance FastAPI backend
+- 📄 Automatic Swagger & ReDoc API documentation
+- ✅ Input validation using Pydantic
+- 🌐 Responsive HTML/CSS/JavaScript frontend
+- 📊 Prediction probability and risk classification
+- ❤️ Health check endpoint
+- 📦 Modular, production-ready architecture
+- 🚀 Ready for cloud deployment
+
+---
+
+## 🏗️ System Architecture
+
+```
+                    User
+                     │
+                     ▼
+        HTML / CSS / JavaScript Frontend
+                     │
+             HTTP Requests (JSON)
+                     │
+                     ▼
+              FastAPI Application
+                     │
+      ┌──────────────┴──────────────┐
+      │                             │
+      ▼                             ▼
+ Prediction Router             Static Pages
+      │
+      ▼
+ Prediction Service
+      │
+      ▼
+ Machine Learning Models (.pkl)
+      │
+      ▼
+ Prediction Response
+```
+
+---
+
+# 📁 Project Structure
 
 ```
 diabetes-fastapi/
+│
 ├── app/
-│   ├── main.py              # FastAPI app, mounts routers + static files
-│   ├── config.py            # File paths & constants
-│   ├── models/
-│   │   └── schemas.py       # Pydantic request/response models (replaces st widgets)
-│   ├── services/
-│   │   └── prediction.py    # ML loading + inference logic (replaces script body)
+│   ├── main.py
+│   ├── config.py
+│   │
 │   ├── routers/
-│   │   ├── predict.py       # POST /api/predict/v1, /v2  (JSON API)
-│   │   └── pages.py         # GET /  (HTML page)
+│   │   ├── predict.py
+│   │   └── pages.py
+│   │
+│   ├── services/
+│   │   └── prediction.py
+│   │
+│   ├── models/
+│   │   └── schemas.py
+│   │
 │   ├── templates/
-│   │   └── index.html       # Frontend form (Jinja2)
+│   │   └── index.html
+│   │
 │   └── static/
 │       ├── style.css
-│       └── app.js           # fetch() calls to the API
-├── ml_models/                # <- put your .pkl files here (see README inside)
+│       └── app.js
+│
+├── ml_models/
+│   ├── xgb_diabetes_model6.pkl
+│   ├── diabetes_pipeline(1).pkl
+│   └── README.md
+│
 ├── requirements.txt
 ├── run.py
 └── README.md
 ```
 
-## Why this structure
+---
 
-- **`services/`** holds all the ML logic that used to be tangled with
-  `st.slider(...)` calls in your scripts. It's plain Python — testable,
-  reusable, and has nothing to do with HTTP.
-- **`schemas.py`** replaces manual input widgets with Pydantic validation.
-  Bad input (e.g. `age=500`) is rejected automatically with a 422 error,
-  and the same schema powers the interactive docs at `/docs`.
-- **`routers/`** are thin — they just call the service and translate
-  errors into HTTP responses. No business logic lives here.
-- Models load **once at startup** (module-level singletons in
-  `prediction.py`), not on every request — the biggest performance
-  difference vs. the Streamlit script re-running top to bottom.
+# 🏛️ Backend Architecture
 
-## Setup
+### `services/`
+
+Contains all machine learning inference logic.
+
+Responsibilities:
+
+- Load trained models
+- Feature engineering
+- Data preprocessing
+- Prediction
+- Probability estimation
+
+No HTTP-related code exists here, making it reusable and testable.
+
+---
+
+### `routers/`
+
+Defines API endpoints.
+
+Responsibilities:
+
+- Receive requests
+- Validate inputs
+- Call prediction services
+- Return JSON responses
+- Handle HTTP errors
+
+Business logic is intentionally excluded.
+
+---
+
+### `schemas.py`
+
+Uses **Pydantic** models to validate incoming requests.
+
+Benefits include:
+
+- Automatic type checking
+- Required field validation
+- Value constraints
+- Auto-generated API documentation
+- Prevents invalid data from reaching the model
+
+---
+
+### Model Loading
+
+Unlike Streamlit, models are loaded **once during application startup**, eliminating repeated disk reads and significantly reducing prediction latency.
+
+---
+
+# 🧠 Machine Learning Models
+
+## Version 1
+
+Production XGBoost model
+
+```
+xgb_diabetes_model6.pkl
+```
+
+Uses a clean feature set:
+
+- Age
+- BMI
+- Hypertension
+- Heart Disease
+- Smoking History
+- HbA1c Level
+- Blood Glucose Level
+- Gender
+
+---
+
+## Version 2
+
+Pipeline model preserving the original training workflow.
+
+```
+diabetes_pipeline(1).pkl
+```
+
+Maintains duplicated columns from the training dataset to ensure identical predictions.
+
+---
+
+# ⚙️ Installation
+
+## Clone Repository
 
 ```bash
+git clone https://github.com/USERNAME/diabetes-fastapi.git
+
 cd diabetes-fastapi
+```
+
+---
+
+## Create Virtual Environment
+
+### Windows
+
+```bash
 python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+.venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+python3 -m venv .venv
+
+source .venv/bin/activate
+```
+
+---
+
+## Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-Copy your `.pkl` files into `ml_models/` (see `ml_models/README.md` for
-exact filenames expected by each model version).
+---
 
-## Run
+## Add Machine Learning Models
+
+Copy all required `.pkl` files into
+
+```
+ml_models/
+```
+
+---
+
+# ▶️ Running the Application
 
 ```bash
 python run.py
-# or
+```
+
+or
+
+```bash
 uvicorn app.main:app --reload
 ```
 
-- Web UI: http://127.0.0.1:8000/
-- Interactive API docs (Swagger): http://127.0.0.1:8000/docs
-- Alternative docs (ReDoc): http://127.0.0.1:8000/redoc
-- Health check: http://127.0.0.1:8000/health
-- Model load status: http://127.0.0.1:8000/api/predict/status
+---
 
-## API
+# 🌐 Available Endpoints
 
-### `POST /api/predict/v1`
-Clean production model (`xgb_diabetes_model6.pkl`).
+| Endpoint | Description |
+|-----------|-------------|
+| `/` | Web Interface |
+| `/docs` | Swagger UI |
+| `/redoc` | ReDoc Documentation |
+| `/health` | Health Check |
+| `/api/predict/status` | Model Status |
+| `/api/predict/v1` | Prediction API (Model V1) |
+| `/api/predict/v2` | Prediction API (Model V2) |
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/predict/v1 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "age": 45, "bmi": 27.5, "hypertension": 0, "heart_disease": 0,
-    "smoking_history": 0, "hba1c_level": 5.6,
-    "blood_glucose_level": 110, "gender": 0
-  }'
+---
+
+# 📡 API Usage
+
+## POST `/api/predict/v1`
+
+### Request
+
+```json
+{
+  "age": 45,
+  "bmi": 27.5,
+  "hypertension": 0,
+  "heart_disease": 0,
+  "smoking_history": 0,
+  "hba1c_level": 5.6,
+  "blood_glucose_level": 110,
+  "gender": 0
+}
 ```
 
-### `POST /api/predict/v2`
-Backend-aligned pipeline model (`diabetes_pipeline(1).pkl`), full raw
-feature set including duplicated columns from the original training data.
+---
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/predict/v2 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "AGE": 45, "age": 45, "BMI": 28.5, "bmi": 28.5,
-    "blood_glucose_level": 110, "HbA1c_level": 5.7, "HbA1c": 5.7,
-    "Cr": 1.0, "TG": 150, "LDL": 100, "HDL": 50, "Chol": 200,
-    "Urea": 30, "VLDL": 20, "ID": 1, "No_Pation": 1, "CLASS": 0,
-    "smoking_history": 0, "heart_disease": 0, "hypertension": 0,
-    "Gender": 0, "gender": 0
-  }'
-```
+## Response
 
-Both return:
 ```json
 {
   "probability": 0.1234,
@@ -112,19 +305,149 @@ Both return:
 }
 ```
 
-## Notes / things worth revisiting
+---
 
-- **Model v2's duplicate columns** (`age`/`AGE`, `bmi`/`BMI`,
-  `gender`/`Gender`, `HbA1c_level`/`HbA1c`) were preserved as-is from your
-  original pipeline so predictions stay identical. Worth cleaning up the
-  training data later so the API doesn't need to ask for the same value
-  twice.
-- **`ID` / `No_Pation` / `CLASS` as model inputs** in v2 look like
-  identifier/leakage columns from the source dataset rather than real
-  predictive features — flagging in case that pipeline should be
-  retrained without them.
-- Deploy behind a real ASGI server (e.g. `uvicorn` with `gunicorn` workers,
-  or a platform like Render/Fly.io/Azure App Service) rather than
-  `--reload` mode.
-- Add CORS middleware in `app/main.py` if the frontend will ever be
-  hosted on a different origin than the API.
+## POST `/api/predict/v2`
+
+Supports the original training pipeline using the complete feature set.
+
+---
+
+# 📊 Prediction Output
+
+Every prediction returns:
+
+- Prediction
+- Probability
+- Risk Label
+- Threshold
+- Model Version
+
+---
+
+# 🔍 Why FastAPI?
+
+Compared to the original Streamlit implementation, FastAPI provides:
+
+| Streamlit | FastAPI |
+|------------|----------|
+| UI and logic tightly coupled | Fully separated architecture |
+| Script reruns every interaction | Models loaded once |
+| Difficult to integrate | REST API |
+| Limited validation | Pydantic validation |
+| UI-focused | Production backend |
+
+---
+
+# 🚀 Deployment
+
+The application can be deployed on:
+
+- Render
+- Railway
+- Fly.io
+- Azure App Service
+- AWS EC2
+- DigitalOcean
+- Docker
+- Kubernetes
+
+For production deployment, use:
+
+```bash
+gunicorn -k uvicorn.workers.UvicornWorker app.main:app
+```
+
+instead of development mode (`--reload`).
+
+---
+
+# 📈 Future Improvements
+
+- Docker support
+- GitHub Actions CI/CD
+- User authentication
+- Prediction history
+- Model monitoring
+- Explainable AI (SHAP)
+- Database integration
+- User dashboard
+- Rate limiting
+- Unit and integration tests
+
+---
+
+# 📸 Screenshots
+
+Add screenshots here after deployment.
+
+### Home Page
+
+```
+images/home.png
+```
+
+### Prediction Results
+
+```
+images/result.png
+```
+
+### Swagger Documentation
+
+```
+images/swagger.png
+```
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature/new-feature
+```
+
+3. Commit changes
+
+```bash
+git commit -m "Add new feature"
+```
+
+4. Push
+
+```bash
+git push origin feature/new-feature
+```
+
+5. Open a Pull Request
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+# 👨‍💻 Author
+
+**Nour Atef Shehata Farag El-Hadidy**
+
+Computer Engineering Student — Egypt-Japan University of Science and Technology (E-JUST)
+
+AI Researcher | Full-Stack Developer | Machine Learning Engineer
+
+GitHub: https://github.com/nourshehata183
+
+LinkedIn: *(Add your LinkedIn URL)*
+
+---
+
+## ⭐ Support
+
+If you found this project useful, consider giving it a **star** on GitHub. It helps others discover the project and supports future development.
