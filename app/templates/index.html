@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diabetes Risk Prediction</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+<main class="container">
+  <h1>🩺 Diabetes Risk Prediction</h1>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="v1">Model v1 (Production)</button>
+    <button class="tab-btn" data-tab="v2">Model v2 (Backend-Aligned)</button>
+  </div>
+
+  <!-- ===================== MODEL V1 FORM ===================== -->
+  <section id="tab-v1" class="tab-panel active">
+    <form id="form-v1" class="card">
+      <label>Age
+        <input type="number" name="age" min="1" max="120" value="30" required />
+      </label>
+      <label>BMI (Body Mass Index)
+        <input type="number" step="0.1" name="bmi" min="10" max="60" value="22.0" required />
+      </label>
+      <label>Hypertension
+        <select name="hypertension" required>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </label>
+      <label>Heart Disease
+        <select name="heart_disease" required>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </label>
+      <label>Smoking History
+        <select name="smoking_history" required>
+          <option value="0">Never smoked</option>
+          <option value="1">Currently smoking</option>
+          <option value="2">Former smoker</option>
+          <option value="3">Tried smoking before</option>
+          <option value="4">Not currently smoking</option>
+          <option value="5">No information</option>
+        </select>
+      </label>
+      <label>HbA1c Level
+        <input type="number" step="0.1" name="hba1c_level" min="3" max="15" value="5.5" required />
+      </label>
+      <label>Blood Glucose Level (mg/dL)
+        <input type="number" step="1" name="blood_glucose_level" min="50" max="300" value="100" required />
+      </label>
+      <label>Gender
+        <select name="gender" required>
+          <option value="0">Male</option>
+          <option value="1">Female</option>
+          <option value="2">Other</option>
+        </select>
+      </label>
+      <button type="submit">Predict</button>
+    </form>
+    <div id="result-v1" class="result"></div>
+  </section>
+
+  <!-- ===================== MODEL V2 FORM ===================== -->
+  <section id="tab-v2" class="tab-panel">
+    <form id="form-v2" class="card">
+      <label>AGE <input type="number" name="AGE" value="45" required /></label>
+      <label>age (lowercase) <input type="number" name="age" value="45" required /></label>
+      <label>BMI <input type="number" step="0.1" name="BMI" value="28.5" required /></label>
+      <label>bmi (lowercase) <input type="number" step="0.1" name="bmi" value="28.5" required /></label>
+      <label>Blood Glucose Level <input type="number" step="1" name="blood_glucose_level" value="110" required /></label>
+      <label>HbA1c_level <input type="number" step="0.1" name="HbA1c_level" value="5.7" required /></label>
+      <label>HbA1c <input type="number" step="0.1" name="HbA1c" value="5.7" required /></label>
+      <label>Creatinine (Cr) <input type="number" step="0.1" name="Cr" value="1.0" required /></label>
+      <label>Triglycerides (TG) <input type="number" step="1" name="TG" value="150" required /></label>
+      <label>LDL <input type="number" step="1" name="LDL" value="100" required /></label>
+      <label>HDL <input type="number" step="1" name="HDL" value="50" required /></label>
+      <label>Cholesterol <input type="number" step="1" name="Chol" value="200" required /></label>
+      <label>Urea <input type="number" step="1" name="Urea" value="30" required /></label>
+      <label>VLDL <input type="number" step="1" name="VLDL" value="20" required /></label>
+      <label>ID <input type="number" name="ID" value="1" required /></label>
+      <label>No_Pation <input type="number" name="No_Pation" value="1" required /></label>
+      <label>CLASS <input type="number" name="CLASS" value="0" required /></label>
+      <label>Smoking History
+        <select name="smoking_history" required>
+          <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+          <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+        </select>
+      </label>
+      <label>Heart Disease
+        <select name="heart_disease" required><option value="0">0</option><option value="1">1</option></select>
+      </label>
+      <label>Hypertension
+        <select name="hypertension" required><option value="0">0</option><option value="1">1</option></select>
+      </label>
+      <label>Gender (uppercase)
+        <select name="Gender" required><option value="0">0</option><option value="1">1</option><option value="2">2</option></select>
+      </label>
+      <label>gender (lowercase)
+        <select name="gender" required><option value="0">0</option><option value="1">1</option><option value="2">2</option></select>
+      </label>
+      <button type="submit">Predict</button>
+    </form>
+    <div id="result-v2" class="result"></div>
+  </section>
+
+  <p class="footer-note">Model powered by XGBoost — served via FastAPI</p>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
