@@ -164,77 +164,9 @@ uvicorn app.main:app --reload
 | POST | `/api/predict/v1` | Production Model |
 | POST | `/api/predict/v2` | Pipeline Model |
 
----
 
-## Example Request
 
-```json
-{
-  "age": 45,
-  "bmi": 27.5,
-  "hypertension": 0,
-  "heart_disease": 0,
-  "smoking_history": 0,
-  "hba1c_level": 5.6,
-  "blood_glucose_level": 110,
-  "gender": 0
-}
-```
 
----
-
-## Example Response
-
-```json
-{
-  "prediction": 0,
-  "probability": 0.1234,
-  "risk_label": "Low Risk of Diabetes",
-  "threshold_used": 0.5,
-  "model_version": "v1-xgb-model6"
-}
-```
-
----
-
-## Deployment
-
-The application can be deployed using:
-
-- Docker
-- Render
-- Railway
-- Fly.io
-- Azure App Service
-- AWS EC2
-
-Production server:
-
-```bash
-gunicorn -k uvicorn.workers.UvicornWorker app.main:app
-```
-
----
-
-## Screenshots
-
-| Home | Prediction | Swagger |
-|------|------------|----------|
-| Add image | Add image | Add image |
-
----
-
-## Author
-
-**Nour Atef Shehata Farag El-Hadidy**
-
-Computer Engineering Student — Egypt-Japan University of Science and Technology (E-JUST)
-
-AI Researcher • Backend Developer • Machine Learning Engineer
-
-GitHub: https://github.com/nourshehata183
-
----
 
 ## License
 
